@@ -12,6 +12,7 @@ import type {
   AvanzarEtapaPayload,
   AvanzarEtapaResponse,
   TareaPendiente,
+  CreateTareaPayload,
   CreateLoteResponse,
   HistorialLoteResponse,
 } from '../types/api';
@@ -120,6 +121,53 @@ export const api = {
   ): Promise<TareaPendiente[]> => {
     return request<TareaPendiente[]>(`/cultivos/${cultivoId}/tareas-pendientes?dias=${dias}`, {
       method: 'GET',
+    });
+  },
+
+  /**
+   * Consulta todas las tareas nutricionales (pendientes y completadas)
+   * GET /cultivos/<id>/tareas
+   */
+  obtenerTodasTareas: (
+    cultivoId: number,
+    dias?: number,
+    soloPendientes: boolean = false
+  ): Promise<TareaPendiente[]> => {
+    const params = new URLSearchParams();
+    if (dias) params.append('dias', dias.toString());
+    if (soloPendientes) params.append('solo_pendientes', 'true');
+    const query = params.toString() ? `?${params.toString()}` : '';
+    return request<TareaPendiente[]>(`/cultivos/${cultivoId}/tareas${query}`, {
+      method: 'GET',
+    });
+  },
+
+  /**
+   * Registra una labor agronómica personalizada en el cronograma
+   * POST /cultivos/<id>/tareas
+   */
+  crearTarea: (
+    cultivoId: number,
+    data: CreateTareaPayload
+  ): Promise<TareaPendiente> => {
+    return request<TareaPendiente>(`/cultivos/${cultivoId}/tareas`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  /**
+   * Cambia el estado de completada de una labor nutricional
+   * PATCH /cultivos/<id>/tareas/<tarea_id>/toggle
+   */
+  toggleTarea: (
+    cultivoId: number,
+    tareaId: number,
+    completada?: boolean
+  ): Promise<TareaPendiente> => {
+    return request<TareaPendiente>(`/cultivos/${cultivoId}/tareas/${tareaId}/toggle`, {
+      method: 'PATCH',
+      body: JSON.stringify(completada !== undefined ? { completada } : {}),
     });
   },
 

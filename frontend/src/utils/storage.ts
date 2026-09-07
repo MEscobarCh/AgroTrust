@@ -71,3 +71,59 @@ export function setActiveCropId(id: number): void {
     console.error('Error saving active crop id', err);
   }
 }
+
+// Helpers para estado de tareas completadas y tareas manuales
+const COMPLETED_TASKS_KEY = 'agrotrust_completed_tasks';
+const CUSTOM_TASKS_KEY = 'agrotrust_custom_tasks';
+
+export function getCompletedTaskIds(cropId: number): number[] {
+  try {
+    const raw = localStorage.getItem(`${COMPLETED_TASKS_KEY}_${cropId}`);
+    return raw ? (JSON.parse(raw) as number[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function toggleCompletedTaskId(cropId: number, taskId: number, forceState?: boolean): boolean {
+  try {
+    const key = `${COMPLETED_TASKS_KEY}_${cropId}`;
+    const list = getCompletedTaskIds(cropId);
+    const isCompleted = list.includes(taskId);
+    const targetState = forceState !== undefined ? forceState : !isCompleted;
+
+    let updated: number[];
+    if (targetState && !isCompleted) {
+      updated = [...list, taskId];
+    } else if (!targetState && isCompleted) {
+      updated = list.filter((id) => id !== taskId);
+    } else {
+      updated = list;
+    }
+    localStorage.setItem(key, JSON.stringify(updated));
+    return targetState;
+  } catch {
+    return false;
+  }
+}
+
+export function getCustomTasks(cropId: number): import('../types/api').TareaPendiente[] {
+  try {
+    const raw = localStorage.getItem(`${CUSTOM_TASKS_KEY}_${cropId}`);
+    return raw ? (JSON.parse(raw) as import('../types/api').TareaPendiente[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function addCustomTask(cropId: number, task: import('../types/api').TareaPendiente): void {
+  try {
+    const key = `${CUSTOM_TASKS_KEY}_${cropId}`;
+    const current = getCustomTasks(cropId);
+    const updated = [task, ...current.filter((t) => t.id !== task.id)];
+    localStorage.setItem(key, JSON.stringify(updated));
+  } catch (err) {
+    console.error('Error saving custom task', err);
+  }
+}
+

@@ -65,11 +65,22 @@ export interface AvanzarEtapaResponse {
   tareas_generadas: TareaGenerada[];
 }
 
-// Modelo de tarea pendiente: GET /cultivos/<id>/tareas-pendientes
+// Modelo de tarea del cronograma nutricional
 export interface TareaPendiente {
   id: number;
   descripcion: string;
   fecha: string; // YYYY-MM-DD
+  etapa?: string;
+  completada?: boolean;
+  categoria?: 'foliar' | 'fertirriego' | 'riego' | 'enmienda' | 'bioestimulante' | 'otro';
+}
+
+// Payload para registrar una labor manual en el cronograma
+export interface CreateTareaPayload {
+  descripcion: string;
+  fecha: string; // YYYY-MM-DD
+  etapa?: string;
+  categoria?: string;
 }
 
 // Respuesta de crear lote de cosecha: POST /cultivos/<id>/lotes

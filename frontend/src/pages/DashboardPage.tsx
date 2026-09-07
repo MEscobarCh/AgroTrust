@@ -10,10 +10,17 @@ import { cropService } from '../services/cropService';
 import { useCrop } from '../context/CropContext';
 import type {
   TareaPendiente,
+  CreateTareaPayload,
   TipoQuimico,
   CreateLoteResponse,
   CreateCultivoPayload,
 } from '../types/api';
+import {
+  getCompletedTaskIds,
+  toggleCompletedTaskId,
+  getCustomTasks,
+  addCustomTask,
+} from '../utils/storage';
 
 export const DashboardPage: React.FC = () => {
   const {
@@ -42,14 +49,50 @@ export const DashboardPage: React.FC = () => {
     setTimeout(() => setToastMessage(null), 4000);
   };
 
-  // Cargar tareas pendientes
+  // Cargar tareas (del backend + almacenamiento local resiliente)
   const fetchTasks = useCallback(async (cropId: number, dias: number) => {
     try {
       setLoadingTasks(true);
-      const res = await cropService.getPendingTasks(cropId, dias);
-      setTasks(res);
+      let loadedTasks: TareaPendiente[] = [];
+
+      try {
+        // Intentar obtener labores desde el endpoint ampliado
+        loadedTasks = await cropService.getAllTasks(cropId, dias > 0 ? dias : undefined);
+      } catch {
+        try {
+          // Fallback al endpoint estándar de pendientes
+          loadedTasks = await cropService.getPendingTasks(cropId, dias);
+        } catch {
+          loadedTasks = [];
+        }
+      }
+
+      // Sincronizar con almacenamiento local (tareas custom y estado de completadas)
+      const localCustom = getCustomTasks(cropId);
+      const completedIds = new Set(getCompletedTaskIds(cropId));
+
+      const map = new Map<number, TareaPendiente>();
+      for (const t of loadedTasks) {
+        const isComp = t.completada !== undefined ? Boolean(t.completada) : completedIds.has(t.id);
+        map.set(t.id, {
+          ...t,
+          completada: isComp,
+        });
+      }
+
+      for (const t of localCustom) {
+        if (!map.has(t.id)) {
+          const isComp = t.completada !== undefined ? Boolean(t.completada) : completedIds.has(t.id);
+          map.set(t.id, {
+            ...t,
+            completada: isComp,
+          });
+        }
+      }
+
+      setTasks(Array.from(map.values()).sort((a, b) => a.fecha.localeCompare(b.fecha)));
     } catch (err: unknown) {
-      console.error(err);
+      console.error('Error al consultar labores:', err);
     } finally {
       setLoadingTasks(false);
     }
@@ -86,6 +129,57 @@ export const DashboardPage: React.FC = () => {
       alert(err instanceof Error ? err.message : 'Error al avanzar etapa');
     } finally {
       setLoadingStage(false);
+    }
+  };
+
+  // Alternar completado de labor nutricional
+  const handleToggleTask = async (taskId: number, currentCompleted: boolean) => {
+    if (!activeCrop) return;
+    const nextState = !currentCompleted;
+
+    // Actualización optimista de UI
+    setTasks((prev) =>
+      prev.map((t) => (t.id === taskId ? { ...t, completada: nextState } : t))
+    );
+    toggleCompletedTaskId(activeCrop.id, taskId, nextState);
+
+    try {
+      await cropService.toggleTask(activeCrop.id, taskId, nextState);
+    } catch (err) {
+      console.warn('Backend toggle offline, guardado en almacenamiento local:', err);
+    }
+
+    if (nextState) {
+      showToast('✅ ¡Labor completada! Se registrará en la trazabilidad del lote.');
+    } else {
+      showToast('Labor marcada como pendiente.');
+    }
+  };
+
+  // Agregar labor manual al cronograma
+  const handleAddTask = async (newTaskData: CreateTareaPayload) => {
+    if (!activeCrop) return;
+    try {
+      let createdTask: TareaPendiente;
+      try {
+        createdTask = await cropService.createTask(activeCrop.id, newTaskData);
+      } catch {
+        // Fallback en caso de que backend esté desconectado
+        createdTask = {
+          id: Date.now(),
+          descripcion: newTaskData.descripcion,
+          fecha: newTaskData.fecha,
+          etapa: newTaskData.etapa || activeCrop.etapa_actual || 'germinacion',
+          categoria: (newTaskData.categoria as TareaPendiente['categoria']) || 'foliar',
+          completada: false,
+        };
+      }
+
+      addCustomTask(activeCrop.id, createdTask);
+      setTasks((prev) => [...prev, createdTask].sort((a, b) => a.fecha.localeCompare(b.fecha)));
+      showToast(`✨ Labor "${createdTask.descripcion}" programada en el cronograma.`);
+    } catch (err: unknown) {
+      alert(err instanceof Error ? err.message : 'Error al registrar la labor');
     }
   };
 
@@ -179,12 +273,16 @@ export const DashboardPage: React.FC = () => {
       />
 
       {/* Grid de 2 Columnas: Ciclo Fenológico y Tareas Nutricionales */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
         <div className="lg:col-span-2">
           <StageStepper
             currentStage={activeCrop?.etapa_actual || 'germinacion'}
             loading={loadingStage}
             onAdvanceStage={handleAdvanceStage}
+            fechaSiembra={activeCrop?.fecha_siembra}
+            cropName={activeCrop?.nombre}
+            variedad={activeCrop?.variedad}
+            onHarvestClick={handleHarvest}
           />
         </div>
 
@@ -194,6 +292,10 @@ export const DashboardPage: React.FC = () => {
             loading={loadingTasks}
             diasVentana={diasVentana}
             onChangeDias={(dias) => setDiasVentana(dias)}
+            onToggleTask={handleToggleTask}
+            onAddTask={handleAddTask}
+            currentStage={activeCrop?.etapa_actual || 'germinacion'}
+            onRefresh={() => activeCrop && fetchTasks(activeCrop.id, diasVentana)}
           />
         </div>
       </div>

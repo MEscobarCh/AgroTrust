@@ -18,6 +18,9 @@ from core import (
     verificar_cosecha_segura,
     avanzar_etapa,
     tareas_pendientes,
+    completar_tarea,
+    agregar_tarea_nutricional,
+    listar_todas_tareas,
 )
 from trazabilidad import crear_lote_cosecha, generar_imagen_qr, obtener_historial_lote
 from flask import send_file
@@ -84,9 +87,81 @@ def pendientes(cultivo_id):
     dias = request.args.get("dias", default=7, type=int)
     tareas = tareas_pendientes(cultivo_id, dias_ventana=dias)
     return jsonify([
-        {"id": t.id, "descripcion": t.descripcion, "fecha": t.fecha_programada.isoformat()}
+        {
+            "id": t.id,
+            "etapa": t.etapa,
+            "descripcion": t.descripcion,
+            "fecha": t.fecha_programada.isoformat(),
+            "completada": bool(t.completada),
+        }
         for t in tareas
     ])
+
+
+@app.route("/cultivos/<int:cultivo_id>/tareas", methods=["GET"])
+def listar_tareas(cultivo_id):
+    dias = request.args.get("dias", default=None, type=int)
+    solo_pendientes = request.args.get("solo_pendientes", default="false").lower() == "true"
+    tareas = listar_todas_tareas(cultivo_id, dias_ventana=dias, solo_pendientes=solo_pendientes)
+    return jsonify([
+        {
+            "id": t.id,
+            "etapa": t.etapa,
+            "descripcion": t.descripcion,
+            "fecha": t.fecha_programada.isoformat(),
+            "completada": bool(t.completada),
+        }
+        for t in tareas
+    ])
+
+
+@app.route("/cultivos/<int:cultivo_id>/tareas", methods=["POST"])
+def crear_tarea_manual(cultivo_id):
+    data = request.get_json()
+    if not data or "descripcion" not in data or "fecha" not in data:
+        return jsonify({"error": "Faltan campos obligatorios ('descripcion', 'fecha')"}), 400
+
+    try:
+        fecha_dt = datetime.strptime(data["fecha"], "%Y-%m-%d").date()
+    except ValueError:
+        return jsonify({"error": "Formato de fecha inválido. Use YYYY-MM-DD"}), 400
+
+    etapa = data.get("etapa", "germinacion")
+    tarea = agregar_tarea_nutricional(
+        cultivo_id=cultivo_id,
+        descripcion=data["descripcion"],
+        fecha_programada=fecha_dt,
+        etapa=etapa,
+    )
+    return jsonify({
+        "id": tarea.id,
+        "etapa": tarea.etapa,
+        "descripcion": tarea.descripcion,
+        "fecha": tarea.fecha_programada.isoformat(),
+        "completada": bool(tarea.completada),
+    }), 201
+
+
+@app.route("/cultivos/<int:cultivo_id>/tareas/<int:tarea_id>/toggle", methods=["POST", "PATCH"])
+def toggle_estado_tarea(cultivo_id, tarea_id):
+    data = request.get_json(silent=True) or {}
+    from models import TareaNutricional
+    tarea = TareaNutricional.query.filter_by(id=tarea_id, cultivo_id=cultivo_id).first()
+    if not tarea:
+        return jsonify({"error": "Tarea no encontrada"}), 404
+
+    nuevo_estado = data.get("completada")
+    if nuevo_estado is None:
+        nuevo_estado = not tarea.completada
+
+    completar_tarea(tarea.id, completada=nuevo_estado)
+    return jsonify({
+        "id": tarea.id,
+        "etapa": tarea.etapa,
+        "descripcion": tarea.descripcion,
+        "fecha": tarea.fecha_programada.isoformat(),
+        "completada": bool(tarea.completada),
+    })
 
 
 @app.route("/cultivos/<int:cultivo_id>/lotes", methods=["POST"])

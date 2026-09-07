@@ -120,3 +120,43 @@ def tareas_pendientes(cultivo_id, dias_ventana=7):
         .order_by(TareaNutricional.fecha_programada)
         .all()
     )
+
+
+def completar_tarea(tarea_id, completada=True):
+    """Marca una labor nutricional como completada o pendiente."""
+    tarea = TareaNutricional.query.get(tarea_id)
+    if not tarea:
+        raise ValueError(f"Tarea #{tarea_id} no encontrada")
+    tarea.completada = bool(completada)
+    db.session.commit()
+    return tarea
+
+
+def agregar_tarea_nutricional(cultivo_id, descripcion, fecha_programada, etapa="germinacion"):
+    """Permite al agricultor registrar una labor nutricional personalizada en el cronograma."""
+    cultivo = Cultivo.query.get(cultivo_id)
+    if not cultivo:
+        raise ValueError(f"Cultivo #{cultivo_id} no encontrado")
+    nueva_tarea = TareaNutricional(
+        cultivo_id=cultivo_id,
+        etapa=etapa,
+        descripcion=descripcion,
+        fecha_programada=fecha_programada,
+        completada=False,
+    )
+    db.session.add(nueva_tarea)
+    db.session.commit()
+    return nueva_tarea
+
+
+def listar_todas_tareas(cultivo_id, dias_ventana=None, solo_pendientes=False):
+    """Retorna todas las labores nutricionales de un cultivo con filtros opcionales."""
+    query = TareaNutricional.query.filter_by(cultivo_id=cultivo_id)
+    if solo_pendientes:
+        query = query.filter_by(completada=False)
+    if dias_ventana is not None and dias_ventana > 0:
+        hoy = datetime.utcnow().date()
+        limite = hoy + timedelta(days=dias_ventana)
+        query = query.filter(TareaNutricional.fecha_programada <= limite)
+    return query.order_by(TareaNutricional.fecha_programada.asc(), TareaNutricional.id.asc()).all()
+

@@ -11,6 +11,7 @@ import type {
   VerificarCosechaResponse,
   AvanzarEtapaResponse,
   TareaPendiente,
+  CreateTareaPayload,
   CreateLoteResponse,
 } from '../types/api';
 
@@ -62,6 +63,41 @@ export const cropService = {
     diasVentana: number = 7
   ): Promise<TareaPendiente[]> {
     return api.obtenerTareasPendientes(cultivoId, diasVentana);
+  },
+
+  /**
+   * Obtiene todas las labores nutricionales (con filtro opcional de días o pendientes)
+   * Endpoint: GET /cultivos/<id>/tareas
+   */
+  async getAllTasks(
+    cultivoId: number,
+    diasVentana?: number,
+    soloPendientes: boolean = false
+  ): Promise<TareaPendiente[]> {
+    return api.obtenerTodasTareas(cultivoId, diasVentana, soloPendientes);
+  },
+
+  /**
+   * Registra una labor agronómica manual o personalizada
+   * Endpoint: POST /cultivos/<id>/tareas
+   */
+  async createTask(
+    cultivoId: number,
+    payload: CreateTareaPayload
+  ): Promise<TareaPendiente> {
+    return api.crearTarea(cultivoId, payload);
+  },
+
+  /**
+   * Alterna el estado completada de una labor nutricional
+   * Endpoint: PATCH /cultivos/<id>/tareas/<id>/toggle
+   */
+  async toggleTask(
+    cultivoId: number,
+    tareaId: number,
+    completada?: boolean
+  ): Promise<TareaPendiente> {
+    return api.toggleTarea(cultivoId, tareaId, completada);
   },
 
   /**
