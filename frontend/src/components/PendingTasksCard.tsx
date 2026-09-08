@@ -30,27 +30,27 @@ const CATEGORY_STYLES: Record<string, { label: string; icon: string; badge: stri
   foliar: {
     label: 'Foliar',
     icon: '🧪',
-    badge: 'bg-violet-50 text-violet-700 border-violet-200',
+    badge: 'bg-indigo-50 text-indigo-700 border-indigo-200',
   },
   fertirriego: {
     label: 'Fertirriego',
     icon: '💧',
-    badge: 'bg-emerald-50 text-emerald-800 border-emerald-200',
+    badge: 'bg-sky-50 text-sky-800 border-sky-200',
   },
   riego: {
     label: 'Riego',
     icon: '🌿',
-    badge: 'bg-sky-50 text-sky-700 border-sky-200',
+    badge: 'bg-blue-50 text-blue-700 border-blue-200',
   },
   enmienda: {
     label: 'Suelo / Enmienda',
     icon: '🌾',
-    badge: 'bg-amber-50 text-amber-800 border-amber-200',
+    badge: 'bg-slate-100 text-slate-700 border-slate-200',
   },
   bioestimulante: {
     label: 'Bioestimulante',
     icon: '✨',
-    badge: 'bg-pink-50 text-pink-700 border-pink-200',
+    badge: 'bg-violet-50 text-violet-700 border-violet-200',
   },
   otro: {
     label: 'Manejo',
@@ -135,13 +135,13 @@ export const PendingTasksCard: React.FC<PendingTasksCardProps> = ({
     }
   };
 
-  // Cálculo de tiempo relativo
+  // Cálculo de tiempo relativo con acentos sobrios
   const getRelativeTimeBadge = (fechaStr: string, isCompleted: boolean) => {
     if (isCompleted) {
       return (
-        <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800">
+        <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-700 border border-indigo-200">
           <Check className="w-3 h-3" />
-          Aplicada / Completada
+          Aplicada
         </span>
       );
     }
@@ -153,27 +153,27 @@ export const PendingTasksCard: React.FC<PendingTasksCardProps> = ({
 
     if (diffDays < 0) {
       return (
-        <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md bg-rose-100 text-rose-800 animate-pulse">
+        <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md bg-rose-50 text-rose-800 border border-rose-200">
           <AlertCircle className="w-3 h-3" />
           Atrasada ({Math.abs(diffDays)}d)
         </span>
       );
     } else if (diffDays === 0) {
       return (
-        <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 font-extrabold">
-          <span className="w-1.5 h-1.5 rounded-full bg-amber-600 animate-ping" />
+        <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md bg-amber-50 text-amber-900 border border-amber-200">
+          <span className="w-1.5 h-1.5 rounded-full bg-amber-600 animate-pulse" />
           ¡Para Hoy!
         </span>
       );
     } else if (diffDays === 1) {
       return (
-        <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md bg-sky-100 text-sky-800">
+        <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200">
           Mañana
         </span>
       );
     } else {
       return (
-        <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-700">
+        <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 border border-slate-200">
           En {diffDays} días
         </span>
       );
@@ -181,109 +181,124 @@ export const PendingTasksCard: React.FC<PendingTasksCardProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm flex flex-col h-full space-y-4">
-      {/* Cabecera Principal */}
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 text-white flex items-center justify-center shadow-xs">
-            <Calendar className="w-5 h-5" />
+    <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-xs flex flex-col h-full space-y-4 overflow-hidden">
+      {/* Cabecera Principal con acento índigo sobrio para nutrición */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 flex-wrap">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-700 border border-indigo-100 flex items-center justify-center shadow-2xs shrink-0">
+            <Calendar className="w-4.5 h-4.5 text-indigo-600" />
           </div>
-          <div>
-            <h3 className="text-base font-bold text-slate-900 leading-tight">Cronograma Nutricional</h3>
-            <p className="text-xs text-slate-500">Plan de fertilización y labores agronómicas</p>
+          <div className="min-w-0">
+            <h3 className="text-base font-bold text-slate-900 leading-tight truncate">
+              Cronograma Nutricional
+            </h3>
+            <p className="text-xs text-slate-500 truncate">Fertilización y bioestimulación</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0 self-start sm:self-auto">
           {onRefresh && (
             <button
               onClick={onRefresh}
               disabled={loading}
-              className="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer"
+              className="p-1.5 sm:p-2 rounded-xl text-slate-500 hover:text-slate-800 bg-white hover:bg-slate-50 border border-slate-300 shadow-2xs transition-colors cursor-pointer shrink-0"
               title="Actualizar labores"
             >
-              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-emerald-600' : ''}`} />
+              <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-indigo-600' : ''}`} />
             </button>
           )}
 
           {onAddTask && (
             <button
               onClick={() => setIsModalOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-xs transition-colors cursor-pointer shrink-0"
-              title="Agregar labor nutricional personalizada"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-indigo-50 text-indigo-700 hover:text-indigo-800 border border-indigo-300 rounded-xl text-xs font-semibold shadow-2xs transition-colors cursor-pointer shrink-0"
+              title="Agregar labor nutricional manual"
             >
-              <Plus className="w-4 h-4" />
-              <span className="hidden sm:inline">Nueva Labor</span>
+              <Plus className="w-3.5 h-3.5 shrink-0" />
+              <span>+ Nueva Labor</span>
             </button>
           )}
         </div>
       </div>
 
-      {/* Barra de progreso de cumplimiento */}
-      <div className="p-3 bg-slate-50 rounded-2xl border border-slate-100 space-y-1.5">
-        <div className="flex items-center justify-between text-xs">
-          <span className="font-semibold text-slate-700 flex items-center gap-1">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-            Cumplimiento Nutricional
+      {/* Barra de progreso de cumplimiento nutricional (acento índigo sobrio) */}
+      <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1.5">
+        <div className="flex items-center justify-between text-xs gap-2">
+          <span className="font-semibold text-slate-700 flex items-center gap-1.5 truncate">
+            <CheckCircle2 className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
+            <span className="truncate">Cumplimiento Nutricional</span>
           </span>
-          <span className="font-bold text-slate-900">
-            {completedCount} de {totalCount} tareas aplicadas ({progressPercent}%)
+          <span className="font-bold text-slate-800 shrink-0 text-xs">
+            {completedCount}/{totalCount} ({progressPercent}%)
           </span>
         </div>
-        <div className="w-full h-2 bg-slate-200/80 rounded-full overflow-hidden">
+        <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
           <div
-            className="h-full bg-emerald-500 rounded-full transition-all duration-500"
+            className="h-full bg-indigo-600 rounded-full transition-all duration-500"
             style={{ width: `${progressPercent}%` }}
           />
         </div>
       </div>
 
-      {/* Controles: Pestañas de estado, Filtro de Días y Buscador */}
-      <div className="space-y-2.5">
-        <div className="flex items-center justify-between gap-2 flex-wrap">
-          {/* Pestañas de estado */}
-          <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
-            <button
-              onClick={() => setFilterTab('pendientes')}
-              className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${
-                filterTab === 'pendientes'
-                  ? 'bg-white text-slate-900 shadow-2xs'
-                  : 'text-slate-500 hover:text-slate-800'
-              }`}
-            >
-              Pendientes ({pendingCount})
-            </button>
-            <button
-              onClick={() => setFilterTab('completadas')}
-              className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${
-                filterTab === 'completadas'
-                  ? 'bg-white text-slate-900 shadow-2xs'
-                  : 'text-slate-500 hover:text-slate-800'
-              }`}
-            >
-              Aplicadas ({completedCount})
-            </button>
-            <button
-              onClick={() => setFilterTab('todas')}
-              className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${
-                filterTab === 'todas'
-                  ? 'bg-white text-slate-900 shadow-2xs'
-                  : 'text-slate-500 hover:text-slate-800'
-              }`}
-            >
-              Todas ({totalCount})
-            </button>
+      {/* Controles: Pestañas de estado en grilla de 3 columnas para evitar desbordamiento */}
+      <div className="space-y-2">
+        <div className="grid grid-cols-3 gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-semibold">
+          <button
+            onClick={() => setFilterTab('pendientes')}
+            className={`py-1 px-1 rounded-lg transition-colors cursor-pointer text-center truncate ${
+              filterTab === 'pendientes'
+                ? 'bg-white text-indigo-950 border border-slate-300 shadow-2xs font-bold'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+            title={`Pendientes (${pendingCount})`}
+          >
+            Pendientes <span className="text-[11px] opacity-80">({pendingCount})</span>
+          </button>
+          <button
+            onClick={() => setFilterTab('completadas')}
+            className={`py-1 px-1 rounded-lg transition-colors cursor-pointer text-center truncate ${
+              filterTab === 'completadas'
+                ? 'bg-white text-indigo-950 border border-slate-300 shadow-2xs font-bold'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+            title={`Aplicadas (${completedCount})`}
+          >
+            Aplicadas <span className="text-[11px] opacity-80">({completedCount})</span>
+          </button>
+          <button
+            onClick={() => setFilterTab('todas')}
+            className={`py-1 px-1 rounded-lg transition-colors cursor-pointer text-center truncate ${
+              filterTab === 'todas'
+                ? 'bg-white text-indigo-950 border border-slate-300 shadow-2xs font-bold'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+            title={`Todas (${totalCount})`}
+          >
+            Todas <span className="text-[11px] opacity-80">({totalCount})</span>
+          </button>
+        </div>
+
+        {/* Fila compacta de Buscador y Ventana de Días */}
+        <div className="flex items-center gap-2">
+          <div className="relative flex-1 min-w-0">
+            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Buscar labor..."
+              className="w-full pl-8 pr-2.5 py-1.5 text-xs rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-slate-800 placeholder:text-slate-400"
+            />
           </div>
 
-          {/* Ventana de días */}
-          <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs">
+          <div className="flex items-center gap-0.5 bg-slate-100 p-0.5 rounded-xl border border-slate-200 text-xs shrink-0">
             {[3, 7, 14, 30].map((dias) => (
               <button
                 key={dias}
                 onClick={() => onChangeDias(dias)}
-                className={`px-2 py-1 text-[11px] font-semibold rounded-lg transition-colors cursor-pointer ${
+                className={`px-1.5 sm:px-2 py-1 text-[11px] font-semibold rounded-lg transition-colors cursor-pointer ${
                   diasVentana === dias
-                    ? 'bg-emerald-600 text-white shadow-2xs'
+                    ? 'bg-indigo-600 text-white shadow-2xs font-bold'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
                 title={`Ver tareas de los próximos ${dias} días`}
@@ -293,25 +308,13 @@ export const PendingTasksCard: React.FC<PendingTasksCardProps> = ({
             ))}
           </div>
         </div>
-
-        {/* Buscador de tareas */}
-        <div className="relative">
-          <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Buscar labor por nutriente o palabra clave..."
-            className="w-full pl-8 pr-3 py-1.5 text-xs rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
-          />
-        </div>
       </div>
 
       {/* Lista de Tareas Nutricionales */}
       <div className="flex-1 overflow-y-auto space-y-2.5 max-h-96 pr-1">
         {loading ? (
           <div className="py-12 text-center text-xs text-slate-400 flex flex-col items-center justify-center gap-2">
-            <Clock className="w-5 h-5 animate-spin text-emerald-600" />
+            <Clock className="w-5 h-5 animate-spin text-indigo-600" />
             <span>Consultando labores nutricionales...</span>
           </div>
         ) : filteredTasks.length > 0 ? (
@@ -324,10 +327,10 @@ export const PendingTasksCard: React.FC<PendingTasksCardProps> = ({
             return (
               <div
                 key={task.id}
-                className={`p-3.5 rounded-2xl border transition-all ${
+                className={`p-3.5 rounded-xl border transition-all ${
                   isCompleted
                     ? 'bg-slate-50/70 border-slate-200 text-slate-400'
-                    : 'bg-white hover:bg-emerald-50/30 border-slate-200/90 shadow-2xs hover:border-emerald-200'
+                    : 'bg-white hover:bg-indigo-50/30 border-slate-200 shadow-2xs hover:border-indigo-200'
                 }`}
               >
                 <div className="flex items-start gap-3">
@@ -337,13 +340,13 @@ export const PendingTasksCard: React.FC<PendingTasksCardProps> = ({
                     disabled={isToggling}
                     className={`mt-0.5 p-1 rounded-lg transition-colors cursor-pointer shrink-0 ${
                       isCompleted
-                        ? 'text-emerald-600 bg-emerald-50 hover:bg-emerald-100'
-                        : 'text-slate-300 hover:text-emerald-600 hover:bg-slate-100'
+                        ? 'text-indigo-600 bg-indigo-50 hover:bg-indigo-100'
+                        : 'text-slate-400 hover:text-indigo-600 hover:bg-slate-100'
                     }`}
                     title={isCompleted ? 'Marcar como pendiente' : 'Marcar como completada'}
                   >
                     {isCompleted ? (
-                      <CheckSquare className="w-5 h-5 text-emerald-600" />
+                      <CheckSquare className="w-5 h-5 text-indigo-600" />
                     ) : (
                       <Square className="w-5 h-5 text-slate-400" />
                     )}
@@ -359,7 +362,7 @@ export const PendingTasksCard: React.FC<PendingTasksCardProps> = ({
                       </span>
 
                       {task.etapa && (
-                        <span className="text-[10px] font-medium px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 capitalize">
+                        <span className="text-[10px] font-medium px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 capitalize border border-slate-200">
                           {task.etapa}
                         </span>
                       )}
@@ -375,15 +378,15 @@ export const PendingTasksCard: React.FC<PendingTasksCardProps> = ({
                       {task.descripcion}
                     </p>
 
-                    <div className="flex items-center gap-3 text-[11px] text-slate-400 mt-1.5">
+                    <div className="flex items-center gap-x-3 gap-y-1 text-[11px] text-slate-400 mt-1.5 flex-wrap">
                       <span className="flex items-center gap-1 font-medium">
-                        <Calendar className="w-3 h-3" />
+                        <Calendar className="w-3 h-3 text-slate-400" />
                         Programada: {task.fecha}
                       </span>
                       {isCompleted && (
-                        <span className="text-emerald-700 font-semibold flex items-center gap-1">
+                        <span className="text-indigo-700 font-semibold flex items-center gap-1">
                           <Check className="w-3 h-3" />
-                          Registrada en Trazabilidad
+                          Registrada en Lote
                         </span>
                       )}
                     </div>
@@ -394,35 +397,35 @@ export const PendingTasksCard: React.FC<PendingTasksCardProps> = ({
           })
         ) : (
           <div className="py-10 px-4 text-center text-xs text-slate-500 flex flex-col items-center justify-center gap-2.5 bg-slate-50/60 rounded-2xl border border-dashed border-slate-200">
-            <CheckCircle2 className="w-8 h-8 text-emerald-500" />
+            <CheckCircle2 className="w-8 h-8 text-indigo-500" />
             <div className="max-w-xs">
-              <p className="font-bold text-slate-700">Sin labores pendientes</p>
+              <p className="font-bold text-slate-700">Sin labores en este período</p>
               <p className="text-slate-400 text-[11px] mt-0.5">
                 {searchTerm
                   ? 'No se encontraron labores con ese criterio de búsqueda.'
-                  : `No hay tareas en la ventana de ${diasVentana} días. Puedes programar una labor manual o ampliar el rango de días.`}
+                  : `No hay tareas pendientes en la ventana de ${diasVentana} días.`}
               </p>
             </div>
             {onAddTask && (
               <button
                 onClick={() => setIsModalOpen(true)}
-                className="mt-1 inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-xl font-semibold text-xs transition-colors cursor-pointer"
+                className="mt-1 inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-50 text-indigo-700 border border-slate-300 rounded-xl font-semibold text-xs transition-colors cursor-pointer shadow-2xs"
               >
                 <Plus className="w-3.5 h-3.5" />
-                <span>Programar Nueva Labor</span>
+                <span>Programar Labor Manual</span>
               </button>
             )}
           </div>
         )}
       </div>
 
-      {/* Tip Agronómico Contextual */}
-      <div className="p-3 bg-gradient-to-r from-emerald-50/80 to-teal-50/80 rounded-2xl border border-emerald-200/60 text-xs text-emerald-950 flex items-start gap-2.5">
-        <Sparkles className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+      {/* Tip Nutricional Contextual */}
+      <div className="p-3 bg-indigo-50/60 rounded-xl border border-indigo-100 text-xs text-indigo-950 flex items-start gap-2.5">
+        <Sparkles className="w-4 h-4 text-indigo-600 shrink-0 mt-0.5" />
         <div className="leading-snug">
-          <span className="font-bold">Recomendación Agronómica: </span>
+          <span className="font-bold">Recomendación Nutricional: </span>
           <span className="text-slate-600">
-            Realiza aplicaciones foliares preferiblemente a primera hora de la mañana (antes de las 9:00 AM) o al caer la tarde para asegurar máxima apertura estomática y evitar fotólisis.
+            Aplica fertilizaciones foliares temprano en la mañana para optimizar la asimilación estomática sin causar estrés hídrico.
           </span>
         </div>
       </div>

@@ -275,16 +275,16 @@ export const StageStepper: React.FC<StageStepperProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm transition-all space-y-6">
+    <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-xs transition-all space-y-6 overflow-hidden">
       {/* Encabezado con estado activo y progreso general */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
+        <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2.5 flex-wrap">
-            <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center shadow-xs">
-              <Layers className="w-4 h-4 text-emerald-700" />
+            <div className="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center shadow-xs border border-slate-200 shrink-0">
+              <Layers className="w-4 h-4 text-emerald-600" />
             </div>
             <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
-              <span>Ciclo Fenológico y Nutricional</span>
+              <span>Ciclo Fenológico y Requerimientos</span>
               {cropName && (
                 <span className="text-xs font-normal text-slate-500 hidden md:inline">
                   • {cropName} {variedad ? `(${variedad})` : ''}
@@ -292,33 +292,33 @@ export const StageStepper: React.FC<StageStepperProps> = ({
               )}
             </h2>
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-semibold">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
               Etapa Activa: {currentStageData.label}
             </span>
             {daysElapsed !== null && (
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-slate-100 text-slate-600 text-xs font-medium">
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-slate-100 text-slate-600 text-xs font-medium border border-slate-200">
                 <Calendar className="w-3.5 h-3.5 text-slate-400" />
                 Día {daysElapsed} de cultivo
               </span>
             )}
           </div>
-          <p className="text-xs text-slate-500 mt-1.5">
-            Cada transición fenológica activa de forma autónoma el cronograma nutricional específico calculado para el cultivo.
+          <p className="text-xs text-slate-500 mt-1.5 leading-relaxed">
+            Progreso agronómico continuo del cultivo con requerimientos nutricionales ajustados a cada fase fenológica.
           </p>
         </div>
 
-        {/* Acciones principales de avance */}
-        <div className="flex items-center gap-2 shrink-0">
+        {/* Acciones principales de avance (Botón primario sólido esmeralda) */}
+        <div className="flex items-center gap-2 shrink-0 self-start sm:self-auto">
           {nextStage && (
             <button
               onClick={() => setIsAdvanceModalOpen(true)}
               disabled={loading}
-              className="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-xs hover:shadow-md transition-all disabled:opacity-50 cursor-pointer"
+              className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-xs transition-all disabled:opacity-50 cursor-pointer shrink-0"
               title={`Avanzar a ${nextStageData?.label}`}
             >
-              <Sparkles className="w-4 h-4 text-emerald-200" />
+              <Sparkles className="w-4 h-4 text-emerald-100" />
               <span>Avanzar Etapa</span>
-              <span className="text-emerald-200 font-medium hidden sm:inline">➔ {nextStageData?.label}</span>
+              <span className="text-emerald-100 font-medium hidden sm:inline">➔ {nextStageData?.label}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           )}
@@ -327,7 +327,7 @@ export const StageStepper: React.FC<StageStepperProps> = ({
             <button
               onClick={onHarvestClick}
               disabled={loading}
-              className="inline-flex items-center gap-2 px-4 py-2.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-xl shadow-xs transition-colors cursor-pointer"
+              className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-xs transition-colors cursor-pointer shrink-0"
             >
               <Award className="w-4 h-4" />
               <span>Cosechar Cultivo</span>
@@ -335,7 +335,7 @@ export const StageStepper: React.FC<StageStepperProps> = ({
           )}
 
           {currentStage === 'cosechado' && (
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 text-slate-700 text-xs font-semibold rounded-xl border border-slate-200">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 text-emerald-800 text-xs font-semibold rounded-xl border border-emerald-200 shrink-0">
               <Check className="w-4 h-4 text-emerald-600" />
               <span>Ciclo Completado</span>
             </span>
@@ -343,18 +343,110 @@ export const StageStepper: React.FC<StageStepperProps> = ({
         </div>
       </div>
 
-      {/* 1. FICHA RESUMEN DE LA ETAPA ACTIVA */}
-      <div className="p-5 rounded-2xl bg-gradient-to-br from-emerald-50/70 via-white to-teal-50/40 border-2 border-emerald-300 shadow-2xs space-y-4">
-        {/* Barra superior de la ficha resumen: Estado + Días desde la siembra */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-emerald-100">
+      {/* LÍNEA CONECTORA HORIZONTAL CONTINUA (Ley de Gestalt: Continuidad) */}
+      <div className="bg-slate-50/70 border border-slate-200 rounded-2xl p-5 space-y-4">
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+            <Leaf className="w-3.5 h-3.5 text-emerald-600" />
+            Línea de Progresión Temporal Continua
+          </span>
+          <span className="text-xs font-bold text-emerald-700">
+            {progressPercentage}% del ciclo
+          </span>
+        </div>
+
+        <div className="relative pt-2 pb-1">
+          {/* Pista conectora continua de fondo (Gris Slate neutro) */}
+          <div className="absolute top-7 left-[12.5%] right-[12.5%] h-1 bg-slate-200 -z-0" />
+
+          {/* Segmento de progreso activo continuo (Verde Esmeralda) */}
+          <div
+            className="absolute top-7 left-[12.5%] h-1 bg-emerald-600 transition-all duration-500 -z-0"
+            style={{
+              width: `${(Math.min(activeIndex, 3) / 3) * 75}%`,
+            }}
+          />
+
+          {/* Nodos de las 4 Fases alineados sobre la línea continua */}
+          <div className="grid grid-cols-4 gap-2 relative z-10">
+            {STAGES_DATA.map((stage, idx) => {
+              const isPassed = idx < activeIndex;
+              const isCurrent = idx === activeIndex;
+              const isInspected = inspectedKey === stage.key;
+              const Icon = stage.icon;
+
+              return (
+                <button
+                  key={stage.key}
+                  type="button"
+                  onClick={() => setInspectedKey(stage.key)}
+                  className={`flex flex-col items-center text-center group cursor-pointer transition-all p-2 rounded-xl border ${
+                    isInspected
+                      ? 'bg-white border-slate-300 shadow-2xs ring-1 ring-slate-300'
+                      : 'border-transparent hover:bg-white/80'
+                  }`}
+                  title={`Ver ficha técnica de ${stage.label}`}
+                >
+                  {/* Nodo circular sobre la pista */}
+                  <div
+                    className={`w-10 h-10 rounded-full flex items-center justify-center transition-all mb-2 shadow-2xs ${
+                      isPassed
+                        ? 'bg-emerald-600 text-white'
+                        : isCurrent
+                        ? 'bg-emerald-600 text-white ring-4 ring-emerald-100 shadow-xs'
+                        : 'bg-white border-2 border-slate-300 text-slate-400 group-hover:border-slate-400'
+                    }`}
+                  >
+                    {isPassed ? (
+                      <Check className="w-5 h-5 stroke-[2.5]" />
+                    ) : (
+                      <Icon className="w-5 h-5" />
+                    )}
+                  </div>
+
+                  {/* Metadatos de la fase */}
+                  <div className="space-y-0.5 w-full">
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+                      Fase {stage.stepNumber}
+                    </span>
+                    <span
+                      className={`text-xs font-bold block truncate ${
+                        isCurrent ? 'text-slate-900 font-extrabold' : 'text-slate-700'
+                      }`}
+                    >
+                      {stage.label}
+                    </span>
+                    <span
+                      className={`inline-block text-[9px] font-bold px-1.5 py-0.5 rounded ${
+                        isPassed
+                          ? 'bg-emerald-50 text-emerald-800'
+                          : isCurrent
+                          ? 'bg-emerald-600 text-white'
+                          : 'bg-slate-100 text-slate-500'
+                      }`}
+                    >
+                      {isPassed ? 'Completada' : isCurrent ? 'En Curso' : 'Pendiente'}
+                    </span>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* 1. FICHA RESUMEN DE LA ETAPA ACTIVA (Región Común & Proximidad) */}
+      <div className="p-5 rounded-2xl bg-slate-50/70 border border-slate-200 shadow-2xs space-y-4">
+        {/* Barra superior de la ficha resumen */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-slate-200">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-xs">
-              <currentStageData.icon className="w-6 h-6" />
+            <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center shadow-xs">
+              <currentStageData.icon className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700">
-                  Ficha Resumen de la Etapa Activa
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                  Ficha de la Etapa Activa
                 </span>
                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-extrabold border border-emerald-200">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
@@ -367,15 +459,15 @@ export const StageStepper: React.FC<StageStepperProps> = ({
 
           {/* Indicador de "Días desde la siembra" */}
           <div className="flex items-center gap-2.5">
-            <div className="px-3.5 py-2 rounded-xl bg-white border border-emerald-200 shadow-2xs flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center">
+            <div className="px-3 py-2 rounded-xl bg-white border border-slate-200 shadow-2xs flex items-center gap-2.5">
+              <div className="w-7 h-7 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center">
                 <Clock className="w-4 h-4" />
               </div>
               <div>
                 <span className="text-[10px] font-bold uppercase text-slate-400 block leading-tight">
-                  Días desde la siembra
+                  Días desde siembra
                 </span>
-                <span className="text-xs font-black text-slate-800">
+                <span className="text-xs font-bold text-slate-800">
                   {daysElapsed !== null ? `${daysElapsed} días acumulados` : '0 días'}
                 </span>
               </div>
@@ -383,23 +475,23 @@ export const StageStepper: React.FC<StageStepperProps> = ({
 
             {fechaSiembra && (
               <div className="hidden lg:flex flex-col text-right text-[11px] text-slate-500 pr-1">
-                <span className="text-slate-400">Fecha de siembra:</span>
+                <span className="text-slate-400">Fecha siembra:</span>
                 <span className="font-semibold text-slate-700">{fechaSiembra}</span>
               </div>
             )}
           </div>
         </div>
 
-        {/* Píldoras / Tags de Recomendación Técnica según la fase */}
+        {/* Píldoras de Recomendación Técnica Preventiva */}
         <div className="space-y-1.5">
           <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
-            Píldoras de Recomendación Técnica Preventiva:
+            Píldoras de Manejo Preventivo:
           </span>
           <div className="flex flex-wrap gap-2">
             {currentStageData.pildorasRecomendacion.map((pill, idx) => (
               <span
                 key={idx}
-                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold bg-white text-slate-800 border border-emerald-200 shadow-2xs hover:bg-emerald-50 transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-semibold bg-white text-slate-700 border border-slate-200 shadow-2xs hover:bg-slate-50 transition-colors"
               >
                 {pill}
               </span>
@@ -407,12 +499,12 @@ export const StageStepper: React.FC<StageStepperProps> = ({
           </div>
         </div>
 
-        {/* 2 Columnas de información agronómica: Objetivo Agronómico y Nutrientes Clave */}
+        {/* 2 Columnas: Objetivo Agronómico y Requerimientos Nutricionales */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 pt-1">
           {/* Objetivo Agronómico */}
-          <div className="lg:col-span-5 bg-white p-4 rounded-xl border border-emerald-100 shadow-2xs space-y-2">
+          <div className="lg:col-span-5 bg-white p-4 rounded-xl border border-slate-200 shadow-2xs space-y-2">
             <div className="flex items-center gap-2 text-xs font-bold text-slate-900">
-              <Target className="w-4 h-4 text-emerald-600" />
+              <Target className="w-4 h-4 text-slate-700" />
               <span>Objetivo Agronómico</span>
             </div>
             <p className="text-xs text-slate-600 leading-relaxed font-normal">
@@ -424,15 +516,15 @@ export const StageStepper: React.FC<StageStepperProps> = ({
             </div>
           </div>
 
-          {/* Nutrientes Clave */}
-          <div className="lg:col-span-7 bg-white p-4 rounded-xl border border-emerald-100 shadow-2xs space-y-2.5">
+          {/* Requerimientos Nutricionales */}
+          <div className="lg:col-span-7 bg-white p-4 rounded-xl border border-slate-200 shadow-2xs space-y-2.5">
             <div className="flex items-center justify-between">
               <span className="flex items-center gap-2 text-xs font-bold text-slate-900">
-                <Sparkles className="w-4 h-4 text-amber-500" />
-                <span>Nutrientes Clave de la Fase</span>
+                <Sparkles className="w-4 h-4 text-slate-700" />
+                <span>Elementos y Nutrientes Clave</span>
               </span>
-              <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md">
-                Prioridad Agronómica
+              <span className="text-[10px] font-semibold text-slate-600 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-md">
+                Prioridad de Asimilación
               </span>
             </div>
 
@@ -440,29 +532,25 @@ export const StageStepper: React.FC<StageStepperProps> = ({
               {currentStageData.nutrientesClave.map((nutriente, idx) => (
                 <div
                   key={idx}
-                  className={`p-2.5 rounded-lg border text-xs transition-all ${
-                    nutriente.esDestacado
-                      ? 'bg-gradient-to-r from-emerald-50/70 to-teal-50/50 border-emerald-200'
-                      : 'bg-slate-50/70 border-slate-100'
-                  }`}
+                  className="p-2.5 rounded-xl border border-slate-200 bg-slate-50/60 text-xs"
                 >
                   <div className="flex items-center justify-between mb-1">
                     <span className="font-bold text-slate-800">
                       [{nutriente.elemento}] {nutriente.nombre}
                     </span>
                     <span
-                      className={`text-[9px] font-bold px-1.5 py-0.5 rounded-sm text-white ${
+                      className={`text-[9px] font-bold px-1.5 py-0.5 rounded-sm ${
                         nutriente.nivel === 'Crítico'
-                          ? 'bg-rose-500'
+                          ? 'bg-slate-900 text-white'
                           : nutriente.nivel === 'Alto'
-                          ? 'bg-amber-500'
-                          : 'bg-slate-400'
+                          ? 'bg-slate-200 text-slate-800'
+                          : 'bg-slate-100 text-slate-600'
                       }`}
                     >
                       {nutriente.nivel}
                     </span>
                   </div>
-                  <p className="text-[11px] text-slate-600 leading-tight">{nutriente.rol}</p>
+                  <p className="text-[11px] text-slate-500 leading-tight">{nutriente.rol}</p>
                 </div>
               ))}
             </div>
@@ -470,35 +558,19 @@ export const StageStepper: React.FC<StageStepperProps> = ({
         </div>
       </div>
 
-      {/* Barra de progreso visual del ciclo fenológico */}
-      <div className="space-y-1.5 bg-slate-50 p-3 rounded-2xl border border-slate-200/70">
-        <div className="flex items-center justify-between text-xs">
-          <span className="font-semibold text-slate-700 flex items-center gap-1.5">
-            <Leaf className="w-3.5 h-3.5 text-emerald-600" />
-            Progreso del Ciclo Productivo
-          </span>
-          <span className="font-bold text-emerald-700">{progressPercentage}% completado</span>
-        </div>
-        <div className="w-full h-2.5 bg-slate-200/80 rounded-full overflow-hidden">
-          <div
-            className="h-full bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 rounded-full transition-all duration-500 shadow-xs"
-            style={{ width: `${progressPercentage}%` }}
-          />
-        </div>
-      </div>
-
-      {/* Grid Interactivo de las 4 Etapas */}
+      {/* Grid de 4 Fases con botón de alternar detalles */}
       <div>
-        <div className="flex items-center justify-between mb-2.5">
-          <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-            Etapas del Ciclo (Haz clic en una etapa para ver su ficha técnica)
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+            Detalle por Fases del Cultivo
           </span>
+          {/* Botón secundario en estilo outline neutro */}
           <button
             onClick={() => setShowDetails(!showDetails)}
-            className="text-xs text-emerald-700 hover:text-emerald-800 font-semibold flex items-center gap-1 cursor-pointer"
+            className="text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-300 px-3 py-1.5 rounded-xl shadow-2xs flex items-center gap-1.5 cursor-pointer transition-colors"
           >
-            <span>{showDetails ? 'Ocultar Ficha Agronómica' : 'Ver Ficha Agronómica'}</span>
-            {showDetails ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+            <span>{showDetails ? 'Ocultar Ficha Técnica' : 'Ver Ficha Técnica'}</span>
+            {showDetails ? <ChevronUp className="w-3.5 h-3.5 text-slate-500" /> : <ChevronDown className="w-3.5 h-3.5 text-slate-500" />}
           </button>
         </div>
 
@@ -515,20 +587,20 @@ export const StageStepper: React.FC<StageStepperProps> = ({
                 onClick={() => setInspectedKey(stage.key)}
                 className={`relative p-4 rounded-2xl border transition-all text-left cursor-pointer select-none group ${
                   isCurrent
-                    ? 'bg-gradient-to-b from-emerald-50/90 to-white border-emerald-400 ring-2 ring-emerald-500/20 shadow-xs'
+                    ? 'bg-white border-emerald-400 ring-2 ring-emerald-500/20 shadow-xs'
                     : isPassed
                     ? 'bg-slate-50/70 border-slate-200 text-slate-700 hover:bg-slate-100/80'
-                    : 'bg-white border-slate-200/80 opacity-75 hover:opacity-100 hover:border-slate-300'
-                } ${isInspected ? 'ring-2 ring-emerald-600/30' : ''}`}
+                    : 'bg-white border-slate-200 opacity-80 hover:opacity-100 hover:border-slate-300'
+                } ${isInspected ? 'ring-2 ring-slate-400/40' : ''}`}
               >
-                {/* Cabecera de la tarjeta con icono y número */}
+                {/* Cabecera de la tarjeta con icono y estado */}
                 <div className="flex items-center justify-between mb-3">
                   <div
                     className={`w-9 h-9 rounded-xl flex items-center justify-center transition-colors ${
                       isCurrent
-                        ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-300'
+                        ? 'bg-emerald-600 text-white shadow-xs'
                         : isPassed
-                        ? 'bg-emerald-100 text-emerald-800'
+                        ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
                         : 'bg-slate-100 text-slate-500 group-hover:bg-slate-200'
                     }`}
                   >
@@ -537,7 +609,7 @@ export const StageStepper: React.FC<StageStepperProps> = ({
 
                   <div className="flex items-center gap-1.5">
                     {isPassed ? (
-                      <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800">
+                      <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200">
                         <Check className="w-3 h-3" />
                         Completada
                       </span>
@@ -555,30 +627,24 @@ export const StageStepper: React.FC<StageStepperProps> = ({
                 </div>
 
                 {/* Título y descripción breve */}
-                <h3
-                  className={`text-sm font-bold leading-tight ${
-                    isCurrent ? 'text-emerald-950' : 'text-slate-900'
-                  }`}
-                >
+                <h3 className="text-sm font-bold leading-tight text-slate-900">
                   {stage.label}
                 </h3>
                 <p className="text-[11px] text-slate-500 mt-1 line-clamp-2 leading-relaxed">
                   {stage.tagline}
                 </p>
 
-                {/* Duración aproximada y chip de nutrientes */}
+                {/* Duración aproximada y estado de inspección */}
                 <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[10px]">
                   <span className="text-slate-400 font-medium">{stage.duracionEstimada}</span>
                   <span
                     className={`px-2 py-0.5 rounded-md font-semibold ${
-                      isCurrent
-                        ? 'bg-emerald-100/70 text-emerald-800'
-                        : isPassed
-                        ? 'bg-slate-200/70 text-slate-700'
-                        : 'bg-slate-100 text-slate-500'
+                      isInspected
+                        ? 'bg-slate-900 text-white'
+                        : 'bg-slate-100 text-slate-600'
                     }`}
                   >
-                    {isInspected ? '🔍 Inspeccionando' : 'Ver detalles'}
+                    {isInspected ? 'Inspeccionando' : 'Ver ficha'}
                   </span>
                 </div>
               </div>
@@ -589,18 +655,18 @@ export const StageStepper: React.FC<StageStepperProps> = ({
 
       {/* Ficha Técnica Agronómica Expandida de la Etapa Inspeccionada */}
       {showDetails && inspectedData && (
-        <div className="p-5 rounded-2xl bg-gradient-to-br from-slate-50 via-white to-emerald-50/30 border border-slate-200 shadow-2xs space-y-4 animate-in fade-in">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200/80 pb-3">
+        <div className="p-5 rounded-2xl bg-slate-50/70 border border-slate-200 shadow-2xs space-y-4 animate-in fade-in">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-3">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center">
+              <div className="w-8 h-8 rounded-xl bg-slate-900 text-white flex items-center justify-center">
                 <inspectedData.icon className="w-4 h-4" />
               </div>
               <div>
                 <h4 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                  <span>Ficha Agronómica: {inspectedData.label}</span>
+                  <span>Ficha Técnica: {inspectedData.label}</span>
                   {inspectedData.key === currentStage && (
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 border border-emerald-200">
-                      Etapa Actual del Cultivo
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200">
+                      Etapa Actual
                     </span>
                   )}
                 </h4>
@@ -622,10 +688,10 @@ export const StageStepper: React.FC<StageStepperProps> = ({
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Columna 1: Demanda Nutricional */}
-            <div className="bg-white p-3.5 rounded-xl border border-slate-200/80 shadow-2xs space-y-2.5">
+            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs space-y-2.5">
               <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                Enfoque Nutricional y Elementos Clave
+                <Sparkles className="w-3.5 h-3.5 text-slate-700" />
+                Demanda Nutricional
               </span>
               <div className="space-y-2">
                 {inspectedData.nutrientesClave.map((nutriente, i) => (
@@ -634,7 +700,7 @@ export const StageStepper: React.FC<StageStepperProps> = ({
                       <span className="text-slate-800">
                         <strong>[{nutriente.elemento}]</strong> {nutriente.nombre}
                       </span>
-                      <span className="text-[10px] font-bold text-slate-500 px-1.5 py-0.5 rounded-md bg-slate-100">
+                      <span className="text-[10px] font-bold text-slate-600 px-1.5 py-0.5 rounded-md bg-slate-100 border border-slate-200">
                         {nutriente.nivel}
                       </span>
                     </div>
@@ -645,49 +711,49 @@ export const StageStepper: React.FC<StageStepperProps> = ({
             </div>
 
             {/* Columna 2: Manejo Hídrico y Suelo */}
-            <div className="bg-white p-3.5 rounded-xl border border-slate-200/80 shadow-2xs space-y-2.5">
+            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs space-y-2.5">
               <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
-                <Droplets className="w-3.5 h-3.5 text-sky-500" />
+                <Droplets className="w-3.5 h-3.5 text-slate-700" />
                 Manejo Hídrico y Suelo
               </span>
               <div className="space-y-2 text-xs">
                 <div>
-                  <span className="text-slate-500 text-[11px] font-semibold block">Régimen de Riego:</span>
+                  <span className="text-slate-400 text-[11px] font-semibold block">Régimen de Riego:</span>
                   <p className="text-slate-800 font-medium">{inspectedData.manejoHidrico.frecuencia}</p>
                 </div>
                 <div>
-                  <span className="text-slate-500 text-[11px] font-semibold block">pH Recomendado:</span>
+                  <span className="text-slate-400 text-[11px] font-semibold block">pH Recomendado:</span>
                   <p className="text-slate-800 font-medium">{inspectedData.manejoHidrico.phRecomendado}</p>
                 </div>
-                <div className="p-2 rounded-lg bg-sky-50/70 border border-sky-100 text-[11px] text-sky-900">
+                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[11px] text-slate-700 leading-relaxed">
                   {inspectedData.manejoHidrico.consejo}
                 </div>
               </div>
             </div>
 
             {/* Columna 3: Labores Automáticas del Cronograma */}
-            <div className="bg-white p-3.5 rounded-xl border border-slate-200/80 shadow-2xs space-y-2.5">
+            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs space-y-2.5">
               <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
-                <Calendar className="w-3.5 h-3.5 text-emerald-600" />
-                Labores Nutricionales Programadas
+                <Calendar className="w-3.5 h-3.5 text-slate-700" />
+                Labores Nutricionales Asociadas
               </span>
               <div className="space-y-2">
                 {inspectedData.laboresAutomaticas.map((labor, i) => (
                   <div
                     key={i}
-                    className="p-2.5 rounded-lg bg-emerald-50/50 border border-emerald-100 text-xs flex items-start gap-2"
+                    className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs flex items-start gap-2"
                   >
-                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 shrink-0" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-slate-700 mt-1.5 shrink-0" />
                     <div>
                       <p className="font-semibold text-slate-800 leading-snug">{labor.descripcion}</p>
-                      <p className="text-[10px] text-emerald-700 mt-0.5">{labor.tiempo}</p>
+                      <p className="text-[10px] text-slate-500 mt-0.5">{labor.tiempo}</p>
                     </div>
                   </div>
                 ))}
 
                 <div className="pt-1">
                   <div className="flex items-start gap-1.5 text-[11px] text-slate-600">
-                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                    <ShieldCheck className="w-3.5 h-3.5 text-slate-600 shrink-0 mt-0.5" />
                     <span>{inspectedData.fitosanitario.cuidadoPrincipal}</span>
                   </div>
                 </div>
@@ -700,7 +766,7 @@ export const StageStepper: React.FC<StageStepperProps> = ({
       {/* Modal de Confirmación para Avanzar de Etapa */}
       {isAdvanceModalOpen && nextStageData && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in">
-          <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 relative">
+          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 relative">
             <button
               onClick={() => setIsAdvanceModalOpen(false)}
               className="absolute top-5 right-5 text-slate-400 hover:text-slate-600 p-1.5 rounded-full hover:bg-slate-100 transition-colors cursor-pointer"
@@ -710,8 +776,8 @@ export const StageStepper: React.FC<StageStepperProps> = ({
             </button>
 
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-11 h-11 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center">
-                <Sparkles className="w-6 h-6 text-emerald-600" />
+              <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center justify-center">
+                <Sparkles className="w-5 h-5 text-emerald-600" />
               </div>
               <div>
                 <h3 className="text-base font-bold text-slate-900">Confirmar Avance de Etapa</h3>
@@ -720,12 +786,12 @@ export const StageStepper: React.FC<StageStepperProps> = ({
             </div>
 
             {/* Comparativa de Etapas */}
-            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-3 mb-4">
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-3 mb-4">
               <div className="text-center flex-1">
                 <span className="text-[10px] uppercase font-bold text-slate-400">Etapa Actual</span>
                 <p className="text-sm font-bold text-slate-700">{currentStageData.label}</p>
               </div>
-              <ArrowRight className="w-5 h-5 text-emerald-600 shrink-0" />
+              <ArrowRight className="w-5 h-5 text-slate-400 shrink-0" />
               <div className="text-center flex-1">
                 <span className="text-[10px] uppercase font-bold text-emerald-700">Nueva Etapa</span>
                 <p className="text-sm font-bold text-emerald-900">{nextStageData.label}</p>
@@ -735,17 +801,17 @@ export const StageStepper: React.FC<StageStepperProps> = ({
             {/* Previsualización de Labores a Generar */}
             <div className="mb-5 space-y-2">
               <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-                <Calendar className="w-3.5 h-3.5 text-emerald-600" />
+                <Calendar className="w-3.5 h-3.5 text-slate-600" />
                 Labores nutricionales que se activarán automáticamente:
               </span>
               <div className="space-y-1.5">
                 {nextStageData.laboresAutomaticas.map((labor, i) => (
                   <div
                     key={i}
-                    className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-xs flex items-start justify-between gap-2"
+                    className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs flex items-start justify-between gap-2"
                   >
-                    <span className="font-semibold text-emerald-900">{labor.descripcion}</span>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-white text-emerald-700 shadow-2xs">
+                    <span className="font-semibold text-slate-800">{labor.descripcion}</span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-600 shadow-2xs">
                       {labor.tiempo}
                     </span>
                   </div>
@@ -757,13 +823,15 @@ export const StageStepper: React.FC<StageStepperProps> = ({
             </div>
 
             <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100">
+              {/* Botón secundario en estilo outline neutro */}
               <button
                 type="button"
                 onClick={() => setIsAdvanceModalOpen(false)}
-                className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
+                className="px-4 py-2 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-300 rounded-xl transition-colors cursor-pointer shadow-2xs"
               >
                 Cancelar
               </button>
+              {/* Botón primario sólido en verde esmeralda */}
               <button
                 type="button"
                 onClick={handleConfirmAdvance}

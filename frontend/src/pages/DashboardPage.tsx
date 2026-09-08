@@ -206,59 +206,62 @@ export const DashboardPage: React.FC = () => {
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full space-y-6">
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-5 right-5 z-50 bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-xl flex items-center gap-2.5 text-sm animate-in slide-in-from-bottom">
+        <div className="fixed bottom-5 right-5 z-50 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-2.5 text-xs animate-in slide-in-from-bottom">
           <Sparkles className="w-4 h-4 text-emerald-400" />
           <span>{toastMessage}</span>
         </div>
       )}
 
-      {/* Encabezado del Cultivo Activo */}
-      <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      {/* Encabezado del Cultivo Activo (Región Común en bg-white, border-slate-200, rounded-2xl) */}
+      <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 text-white flex items-center justify-center shadow-md shadow-emerald-200">
-            <Sprout className="w-8 h-8" />
+          <div className="w-12 h-12 rounded-xl bg-slate-100 text-slate-700 border border-slate-200 flex items-center justify-center shadow-2xs shrink-0">
+            <Sprout className="w-6 h-6 text-emerald-600" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-black tracking-tight text-slate-900">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h1 className="text-xl font-bold tracking-tight text-slate-900">
                 {activeCrop?.nombre || 'Cultivo Principal'}
               </h1>
               {activeCrop?.variedad && (
-                <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700">
-                  Var: {activeCrop.variedad}
+                <span className="text-xs font-semibold px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200">
+                  Variedad: {activeCrop.variedad}
                 </span>
               )}
-              <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200">
+              <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200">
                 ID #{activeCrop?.id || 1}
               </span>
             </div>
-            <div className="flex items-center gap-4 text-xs text-slate-500 mt-1">
+            <div className="flex items-center gap-3 text-xs text-slate-500 mt-1">
               <span className="flex items-center gap-1">
                 <Calendar className="w-3.5 h-3.5 text-slate-400" />
                 Sembrado: {activeCrop?.fecha_siembra || '2026-01-01'}
               </span>
               <span>•</span>
-              <span className="capitalize font-medium text-slate-700">
-                Etapa: {activeCrop?.etapa_actual || 'germinacion'}
+              <span className="capitalize font-medium text-slate-600">
+                Fase actual: {activeCrop?.etapa_actual || 'germinacion'}
               </span>
             </div>
           </div>
         </div>
 
+        {/* Botones secundarios en estilo outline neutro */}
         <div className="flex items-center gap-2.5">
           <button
             onClick={() => setIsChemicalModalOpen(true)}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-900 text-xs font-bold transition-colors shadow-2xs"
+            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white hover:bg-amber-50/60 border border-slate-300 text-slate-700 hover:text-amber-900 text-xs font-semibold transition-colors shadow-2xs cursor-pointer"
+            title="Registrar aplicación fitosanitaria con período de carencia"
           >
-            <FlaskConical className="w-4 h-4 text-amber-700" />
+            <FlaskConical className="w-3.5 h-3.5 text-amber-600" />
             <span>+ Registrar Agroquímico</span>
           </button>
 
           <button
             onClick={() => setIsNewCropModalOpen(true)}
-            className="inline-flex items-center gap-1.5 px-3 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-colors"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 text-xs font-semibold transition-colors shadow-2xs cursor-pointer"
+            title="Crear un nuevo lote o cultivo"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-3.5 h-3.5 text-slate-500" />
             <span className="hidden sm:inline">Nuevo Cultivo</span>
           </button>
         </div>
